@@ -6,6 +6,9 @@
     <title>Automyynti Hakala</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Add Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
 </head>
 <body>
     <header>
@@ -25,37 +28,53 @@
         </div>
     </header>
     <div class="wrapper">
-    <main class="mainContainer">
-        <div class="mainContent" id="mainContent">
-            <p id="editable" contenteditable="false">
-                <b>Automyynti Hakala Ay</b> <br>
-                Takojankatu 1 <br>
-                86300 Oulainen <br>
-                <br>
-                <b>Avoinna:</b> <br>
-                Arkisin: 10.00 - 17.15 <br>
-                Lauantaisin: 10.00 - 13.30 <br>
-                <br>
-                <b>Tarjoamme:</b> <br>
-                - Edullisia ja siistejä katsastettuja autoja! <br>
-                - Osto, myynti, vaihto sekä rahoitus! <br>
-                - MITSUBISHI-Ilmalämpöpumput, ammattitaitoiset asennukset<br>
-                <br>
-                <b>Yhteystiedot:</b><br>
-                Liike: (08) 473374 (aukioloaikoina)<br>
-                Esa Hakala: 0400-683243<br>
-                Arto Hakala: 0400-683263<br>
-                autohakala(at)gmail.com<br>
-            </p>
+        <main class="mainContainer">
+            <div class="mainContent" id="mainContent">
+                <p id="editable" contenteditable="false">
+                    <b>Automyynti Hakala Ay</b> <br>
+                    Takojankatu 1 <br>
+                    86300 Oulainen <br>
+                    <br>
+                    <b>Avoinna:</b> <br>
+                    Arkisin: 10.00 - 17.15 <br>
+                    Lauantaisin: 10.00 - 13.30 <br>
+                    <br>
+                    <b>Tarjoamme:</b> <br>
+                    - Edullisia ja siistejä katsastettuja autoja! <br>
+                    - Osto, myynti, vaihto sekä rahoitus! <br>
+                    - MITSUBISHI-Ilmalämpöpumput, ammattitaitoiset asennukset<br>
+                    <br>
+                    <b>Yhteystiedot:</b><br>
+                    Liike: (08) 473374 (aukioloaikoina)<br>
+                    Esa Hakala: 0400-683243<br>
+                    Arto Hakala: 0400-683263<br>
+                    autohakala(at)gmail.com<br>
+                </p>
+            </div>
+            <button id="closeButton" onclick="hideMainContent()" class="closeButton fa-solid fa-xmark" aria-label="Close"></button>
+            <button id="editButton" onclick="handleEditButton()" class="fas fa-edit"></button>
+        </main>
+        <div class="iframeContainer">
+            <iframe id="myIframe" src="https://www.nettiauto.com/yritys/539535" class="iframeContent"></iframe>
         </div>
-        <button id="closeButton" onclick="hideMainContent()" class="closeButton fa-solid fa-xmark" aria-label="Close"></button>
-        <button id="editButton" onclick="handleEditButton()" class="fas fa-edit"></button>
-    </main>
-    <div class="iframeContainer">
-        <iframe id="myIframe" src="https://www.nettiauto.com/yritys/539535" class="iframeContent"></iframe>
-    </div>
     </div>
     <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+
+      // Initialize Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const database = firebase.getDatabase(app);
+      const dbRef = firebase.ref(database, 'editableContent');
+
       let isLoggedIn = false;  // Track login state
       let isEditing = false;   // Track edit mode state
 
@@ -115,13 +134,28 @@
 
       // Save edited content
       function saveEdit() {
-        const editableText = document.getElementById('editable');
-        editableText.contentEditable = "false";
-        isEditing = false;
-        alert("Muutokset tallennettu!");
-        // Revert the button icon back to "edit" mode
-        document.getElementById('editButton').classList.remove('fa-save');
-        document.getElementById('editButton').classList.add('fa-edit');
+        const editableText = document.getElementById('editable').innerHTML;
+        firebase.set(dbRef, {
+          content: editableText
+        }).then(() => {
+          alert("Muutokset tallennettu!");
+          document.getElementById('editButton').classList.remove('fa-save');
+          document.getElementById('editButton').classList.add('fa-edit');
+          isEditing = false;
+        }).catch((error) => {
+          console.error("Error saving data: ", error);
+        });
+      }
+
+      // Load content from Firebase
+      window.onload = function() {
+        firebase.get(dbRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            document.getElementById('editable').innerHTML = snapshot.val().content;
+          }
+        }).catch((error) => {
+          console.error("Error loading data: ", error);
+        });
       }
     </script>
 </body>
