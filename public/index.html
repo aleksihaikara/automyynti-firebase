@@ -7,8 +7,111 @@
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Add Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+    <script type="module">
+      // Import and configure Firebase
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js';
+      import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js';
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtMJVglgCvbBe8ux4NkTTarfyr8Wtf7RE",
+        authDomain: "hakalan-nettisivu.firebaseapp.com",
+        databaseURL: "https://hakalan-nettisivu-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "hakalan-nettisivu",
+        storageBucket: "hakalan-nettisivu.appspot.com",
+        messagingSenderId: "101295643018",
+        appId: "1:101295643018:web:fc3e044767c604e74b5073",
+        measurementId: "G-FFHLTQ18TJ"
+      };
+      
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const dbRef = ref(database, 'editableContent');
+
+      let isLoggedIn = false;  // Track login state
+      let isEditing = false;   // Track edit mode state
+
+      // Handle login process
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+
+          // Simple username/password check (you can modify this with real logic)
+          if (username === 'admin' && password === 'password') {
+              isLoggedIn = true;
+              document.getElementById('login').style.display = 'none';
+          } else {
+              alert("Väärä tunnus tai salasana!"); // Only an alert for failure
+          }
+        });
+
+        function hideMainContent(){
+          document.getElementById("mainContent").style.display = "none";
+          document.getElementById("closeButton").style.display = "none";
+        }
+
+        function hideLogin(){
+          document.getElementById("login").style.display = "none";
+        }
+
+        function showLogin(){
+          document.getElementById("login").style.display = "block";
+        }
+
+        // Handle edit button functionality
+        function handleEditButton() {
+          if (!isLoggedIn) {
+            // If not logged in, open the login form
+            showLogin();
+          } else {
+            // If logged in, toggle between edit and save mode
+            if (!isEditing) {
+              enableEdit();
+            } else {
+              saveEdit();
+            }
+          }
+        }
+
+        // Enable text editing
+        function enableEdit() {
+          const editableText = document.getElementById('editable');
+          editableText.contentEditable = "true";
+          editableText.focus();
+          isEditing = true;
+          // Change the icon of the button to indicate "Save" (floppy disk icon or similar)
+          document.getElementById('editButton').classList.remove('fa-edit');
+          document.getElementById('editButton').classList.add('fa-save');
+        }
+
+        // Save edited content
+        function saveEdit() {
+          const editableText = document.getElementById('editable').innerHTML;
+          set(dbRef, {
+            content: editableText
+          }).then(() => {
+            alert("Muutokset tallennettu!");
+            document.getElementById('editButton').classList.remove('fa-save');
+            document.getElementById('editButton').classList.add('fa-edit');
+            isEditing = false;
+          }).catch((error) => {
+            console.error("Error saving data: ", error);
+          });
+        }
+
+        // Load content from Firebase
+        get(dbRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            document.getElementById('editable').innerHTML = snapshot.val().content;
+          }
+        }).catch((error) => {
+          console.error("Error loading data: ", error);
+        });
+      });
+    </script>
 </head>
 <body>
     <header>
@@ -58,107 +161,5 @@
             <iframe id="myIframe" src="https://www.nettiauto.com/yritys/539535" class="iframeContent"></iframe>
         </div>
     </div>
-    <script>
-      // Firebase configuration
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyDtMJVglgCvbBe8ux4NkTTarfyr8Wtf7RE",
-        authDomain: "hakalan-nettisivu.firebaseapp.com",
-        databaseURL: "https://hakalan-nettisivu-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "hakalan-nettisivu",
-        storageBucket: "hakalan-nettisivu.appspot.com",
-        messagingSenderId: "101295643018",
-        appId: "1:101295643018:web:fc3e044767c604e74b5073",
-        measurementId: "G-FFHLTQ18TJ"
-      };
-
-      // Initialize Firebase
-      const app = firebase.initializeApp(firebaseConfig);
-      const database = firebase.getDatabase(app);
-      const dbRef = firebase.ref(database, 'editableContent');
-
-      let isLoggedIn = false;  // Track login state
-      let isEditing = false;   // Track edit mode state
-
-      // Handle login process
-      document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        // Simple username/password check (you can modify this with real logic)
-        if (username === 'admin' && password === 'password') {
-            isLoggedIn = true;
-            document.getElementById('login').style.display = 'none';
-        } else {
-            alert("Väärä tunnus tai salasana!"); // Only an alert for failure
-        }
-      });
-
-      function hideMainContent(){
-        document.getElementById("mainContent").style.display = "none";
-        document.getElementById("closeButton").style.display = "none";
-      }
-
-      function hideLogin(){
-        document.getElementById("login").style.display = "none";
-      }
-
-      function showLogin(){
-        document.getElementById("login").style.display = "block";
-      }
-
-      // Handle edit button functionality
-      function handleEditButton() {
-        if (!isLoggedIn) {
-          // If not logged in, open the login form
-          showLogin();
-        } else {
-          // If logged in, toggle between edit and save mode
-          if (!isEditing) {
-            enableEdit();
-          } else {
-            saveEdit();
-          }
-        }
-      }
-
-      // Enable text editing
-      function enableEdit() {
-        const editableText = document.getElementById('editable');
-        editableText.contentEditable = "true";
-        editableText.focus();
-        isEditing = true;
-        // Change the icon of the button to indicate "Save" (floppy disk icon or similar)
-        document.getElementById('editButton').classList.remove('fa-edit');
-        document.getElementById('editButton').classList.add('fa-save');
-      }
-
-      // Save edited content
-      function saveEdit() {
-        const editableText = document.getElementById('editable').innerHTML;
-        firebase.set(dbRef, {
-          content: editableText
-        }).then(() => {
-          alert("Muutokset tallennettu!");
-          document.getElementById('editButton').classList.remove('fa-save');
-          document.getElementById('editButton').classList.add('fa-edit');
-          isEditing = false;
-        }).catch((error) => {
-          console.error("Error saving data: ", error);
-        });
-      }
-
-      // Load content from Firebase
-      window.onload = function() {
-        firebase.get(dbRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            document.getElementById('editable').innerHTML = snapshot.val().content;
-          }
-        }).catch((error) => {
-          console.error("Error loading data: ", error);
-        });
-      }
-    </script>
 </body>
 </html>
