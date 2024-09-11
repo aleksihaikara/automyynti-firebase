@@ -23,17 +23,17 @@
         appId: "1:101295643018:web:fc3e044767c604e74b5073",
         measurementId: "G-FFHLTQ18TJ"
       };
-      
+
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
       const dbRef = ref(database, 'editableContent');
 
-      let isLoggedIn = false;  // Track login state
-      let isEditing = false;   // Track edit mode state
-
-      // Handle login process
       document.addEventListener('DOMContentLoaded', function() {
+        let isLoggedIn = false;  // Track login state
+        let isEditing = false;   // Track edit mode state
+
+        // Handle login process
         document.getElementById('login-form').addEventListener('submit', function(e) {
           e.preventDefault();
           const username = document.getElementById('username').value;
@@ -110,6 +110,10 @@
         }).catch((error) => {
           console.error("Error loading data: ", error);
         });
+
+        // Attach event listeners
+        document.getElementById('closeButton').addEventListener('click', hideMainContent);
+        document.getElementById('editButton').addEventListener('click', handleEditButton);
       });
     </script>
 </head>
@@ -154,8 +158,8 @@
                     autohakala(at)gmail.com<br>
                 </p>
             </div>
-            <button id="closeButton" onclick="hideMainContent()" class="closeButton fa-solid fa-xmark" aria-label="Close"></button>
-            <button id="editButton" onclick="handleEditButton()" class="fas fa-edit"></button>
+            <button id="closeButton" class="closeButton fa-solid fa-xmark" aria-label="Close"></button>
+            <button id="editButton" class="fas fa-edit"></button>
         </main>
         <div class="iframeContainer">
             <iframe id="myIframe" src="https://www.nettiauto.com/yritys/539535" class="iframeContent"></iframe>
