@@ -1,89 +1,128 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/10.13.1/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/10.13.1/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.13.1/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automyynti Hakala</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <div class="headerContainer">
+            <div class="title">
+                <h1>Automyynti Hakala</h1>
+                <h2>Osto - Myynti - Rahoitus</h2>
+            </div>
+        </div>
+        <div id="login" class="login">
+            <form id="login-form">
+                <button type="button" onclick="hideLogin()" id="closeLogin" class="fa-solid fa-xmark" aria-label="Close"></button>
+                <input type="text" placeholder="Käyttäjätunnus" id="username" required>
+                <input type="password" placeholder="Salasana" id="password" required>
+                <button type="submit" id="login-btn">Kirjaudu</button>
+            </form>
+        </div>
+    </header>
+    <div class="wrapper">
+    <main class="mainContainer">
+        <div class="mainContent" id="mainContent">
+            <p id="editable" contenteditable="false">
+                <b>Automyynti Hakala Ay</b> <br>
+                Takojankatu 1 <br>
+                86300 Oulainen <br>
+                <br>
+                <b>Avoinna:</b> <br>
+                Arkisin: 10.00 - 17.15 <br>
+                Lauantaisin: 10.00 - 13.30 <br>
+                <br>
+                <b>Tarjoamme:</b> <br>
+                - Edullisia ja siistejä katsastettuja autoja! <br>
+                - Osto, myynti, vaihto sekä rahoitus! <br>
+                - MITSUBISHI-Ilmalämpöpumput, ammattitaitoiset asennukset<br>
+                <br>
+                <b>Yhteystiedot:</b><br>
+                Liike: (08) 473374 (aukioloaikoina)<br>
+                Esa Hakala: 0400-683243<br>
+                Arto Hakala: 0400-683263<br>
+                autohakala(at)gmail.com<br>
+            </p>
+        </div>
+        <button id="closeButton" onclick="hideMainContent()" class="closeButton fa-solid fa-xmark" aria-label="Close"></button>
+        <button id="editButton" onclick="handleEditButton()" class="fas fa-edit"></button>
+    </main>
+    <div class="iframeContainer">
+        <iframe id="myIframe" src="https://www.nettiauto.com/yritys/539535" class="iframeContent"></iframe>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
+    </div>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      let isLoggedIn = false;  // Track login state
+      let isEditing = false;   // Track edit mode state
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+      // Handle login process
+      document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Simple username/password check (you can modify this with real logic)
+        if (username === 'admin' && password === 'password') {
+            isLoggedIn = true;
+            document.getElementById('login').style.display = 'none';
+        } else {
+            alert("Väärä tunnus tai salasana!"); // Only an alert for failure
         }
       });
+
+      function hideMainContent(){
+        document.getElementById("mainContent").style.display = "none";
+        document.getElementById("closeButton").style.display = "none";
+      }
+
+      function hideLogin(){
+        document.getElementById("login").style.display = "none";
+      }
+
+      function showLogin(){
+        document.getElementById("login").style.display = "block";
+      }
+
+      // Handle edit button functionality
+      function handleEditButton() {
+        if (!isLoggedIn) {
+          // If not logged in, open the login form
+          showLogin();
+        } else {
+          // If logged in, toggle between edit and save mode
+          if (!isEditing) {
+            enableEdit();
+          } else {
+            saveEdit();
+          }
+        }
+      }
+
+      // Enable text editing
+      function enableEdit() {
+        const editableText = document.getElementById('editable');
+        editableText.contentEditable = "true";
+        editableText.focus();
+        isEditing = true;
+        // Change the icon of the button to indicate "Save" (floppy disk icon or similar)
+        document.getElementById('editButton').classList.remove('fa-edit');
+        document.getElementById('editButton').classList.add('fa-save');
+      }
+
+      // Save edited content
+      function saveEdit() {
+        const editableText = document.getElementById('editable');
+        editableText.contentEditable = "false";
+        isEditing = false;
+        alert("Muutokset tallennettu!");
+        // Revert the button icon back to "edit" mode
+        document.getElementById('editButton').classList.remove('fa-save');
+        document.getElementById('editButton').classList.add('fa-edit');
+      }
     </script>
-  </body>
+</body>
 </html>
