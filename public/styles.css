@@ -124,8 +124,7 @@ header{
     height: 100vh;
 }
 .mainContent > p {
-    margin: 1rem 2rem;
-    line-height: 130%;
+    margin: 32px;
 }
 .iframeContainer{
     border-left: 0.5px solid rgb(227, 227, 227);
