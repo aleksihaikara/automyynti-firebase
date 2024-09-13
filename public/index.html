@@ -33,36 +33,48 @@
 
       document.addEventListener('DOMContentLoaded', function() {
 
-        let isEditing = false;   // Track edit mode state
-        let isLoggedIn = false;
-        let failedAttempts = 0; // Track failed login attempts
-        const MAX_DELAY = 5000; // Max delay 5 seconds
-        const INITIAL_DELAY = 1000; // Initial delay is 1 second
+let isLoggedIn = false;
+let failedAttempts = 0; // Track failed login attempts
+const DELAY = 5000; // Fixed delay of 5 seconds
+const messageElem = document.getElementById('login-message');
+const loginFields = document.getElementById('login-fields');
 
-        // Handle login process
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+// Handle login process
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-            // Simple username/password check (you can modify this with real logic)
-            if (username === 'admin' && password === 'password') {
-                isLoggedIn = true;
-                failedAttempts = 0; // Reset failed attempts on successful login
-                document.getElementById('login').style.display = 'none';
-                alert("Login successful!");
+    // Simple username/password check (you can modify this with real logic)
+    if (username === 'admin' && password === 'password') {
+        isLoggedIn = true;
+        failedAttempts = 0; // Reset failed attempts on successful login
+        document.getElementById('login').style.display = 'none';
+        alert("Sisäänkirjautuminen onnistui!");
+    } else {
+        failedAttempts += 1;
+        let remainingTime = DELAY / 1000; // Convert delay to seconds
+
+        // Hide login fields (username, password, submit)
+        loginFields.style.display = 'none';
+
+        // Show the login message with the countdown
+        messageElem.innerText = `Väärä tunnus tai salasana! Odota ${remainingTime} sekunttia.`;
+        messageElem.style.display = 'block';
+
+        // Start the countdown timer
+        let countdownInterval = setInterval(() => {
+            remainingTime -= 1;
+            if (remainingTime > 0) {
+                messageElem.innerText = `Väärä tunnus tai salasana! Odota ${remainingTime} sekunttia.`;
             } else {
-                failedAttempts += 1;
-
-                // Calculate delay (increase delay with each failed attempt)
-                let delay = Math.min(INITIAL_DELAY * failedAttempts, MAX_DELAY);
-
-                // Introduce delay before showing the failure message
-                setTimeout(function() {
-                    alert("Väärä tunnus tai salasana! (" + failedAttempts + " failed attempts)");
-                }, delay);
+                clearInterval(countdownInterval);
+                messageElem.style.display = 'none';  // Hide the message after countdown
+                loginFields.style.display = 'block'; // Show login fields again
             }
-        });
+        }, 1000);
+    }
+});
 
         function hideMainContent(){
           document.getElementById("mainContent").style.display = "none";
@@ -143,11 +155,14 @@
         }
           </script>
             <form id="login-form">
-                <button type="button" onclick="hideLogin()" id="closeLogin" class="fa-solid fa-xmark" aria-label="Close"></button>
-                <input type="text" placeholder="Käyttäjätunnus" id="username" required>
-                <input type="password" placeholder="Salasana" id="password" required>
-                <button type="submit" id="login-btn">Kirjaudu</button>
-            </form>
+              <button type="button" onclick="hideLogin()" id="closeLogin" class="fa-solid fa-xmark" aria-label="Close"></button>
+              <div id="login-fields">
+                  <input type="text" placeholder="Käyttäjätunnus" id="username" required>
+                  <input type="password" placeholder="Salasana" id="password" required>
+                  <button type="submit" id="login-btn">Kirjaudu</button>
+              </div>
+              <p id="login-message" style="color:red; display:none;"></p>
+          </form>
         </div>
     </header>
     <div class="wrapper">
