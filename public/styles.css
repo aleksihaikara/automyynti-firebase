@@ -114,8 +114,8 @@ header{
     cursor: pointer;
 }
 .mainContainer{
-    position: relative;
     width: 20%;
+    position: relative;
     min-width: 400px;
 }
 .mainContent{
