@@ -70,10 +70,6 @@ header{
 #login-message{
     text-align: center;
 }
-#editable:focus {
-    outline: none;
-    border: none;
-}
 .wrapper{
     display: flex;
 }
@@ -119,6 +115,8 @@ header{
 }
 .mainContainer{
     position: relative;
+    width: 20%;
+    min-width: 400px;
 }
 .mainContent{
     display: flex;
@@ -131,6 +129,7 @@ header{
 }
 .mainContent > p {
     margin: 32px;
+    margin-bottom: auto;
 }
 .iframeContainer{
     border-left: 0.5px solid rgb(227, 227, 227);
@@ -138,6 +137,9 @@ header{
     width: 100%;
     height: 100vh;
     overflow: hidden;
+}
+#editable{
+    width: 100%;
 }
 .iframeContent{
     margin-top: -200px;
