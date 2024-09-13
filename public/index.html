@@ -32,22 +32,36 @@
       const dbRef = ref(database, 'editableContent');
 
       document.addEventListener('DOMContentLoaded', function() {
-        let isLoggedIn = false;  // Track login state
+
         let isEditing = false;   // Track edit mode state
+        let isLoggedIn = false;
+        let failedAttempts = 0; // Track failed login attempts
+        const MAX_DELAY = 5000; // Max delay 5 seconds
+        const INITIAL_DELAY = 1000; // Initial delay is 1 second
 
         // Handle login process
         document.getElementById('login-form').addEventListener('submit', function(e) {
-          e.preventDefault();
-          const username = document.getElementById('username').value;
-          const password = document.getElementById('password').value;
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-          // Simple username/password check (you can modify this with real logic)
-          if (username === 'admin' && password === 'password') {
-              isLoggedIn = true;
-              document.getElementById('login').style.display = 'none';
-          } else {
-              alert("Väärä tunnus tai salasana!"); // Only an alert for failure
-          }
+            // Simple username/password check (you can modify this with real logic)
+            if (username === 'admin' && password === 'password') {
+                isLoggedIn = true;
+                failedAttempts = 0; // Reset failed attempts on successful login
+                document.getElementById('login').style.display = 'none';
+                alert("Login successful!");
+            } else {
+                failedAttempts += 1;
+
+                // Calculate delay (increase delay with each failed attempt)
+                let delay = Math.min(INITIAL_DELAY * failedAttempts, MAX_DELAY);
+
+                // Introduce delay before showing the failure message
+                setTimeout(function() {
+                    alert("Väärä tunnus tai salasana! (" + failedAttempts + " failed attempts)");
+                }, delay);
+            }
         });
 
         function hideMainContent(){
