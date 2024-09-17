@@ -98,31 +98,47 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
           }
         }
 
-        // Enable text editing
-        function enableEdit() {
-          const editableText = document.getElementById('editable');
-          editableText.contentEditable = "true";
-          editableText.focus();
-          isEditing = true;
-          // Change the icon of the button to indicate "Save" (floppy disk icon or similar)
-          document.getElementById('editButton').classList.remove('fa-edit');
-          document.getElementById('editButton').classList.add('fa-save');
-        }
+        function toggleBold() {
+        document.execCommand('bold');
+    }
 
-        // Save edited content
-        function saveEdit() {
-          const editableText = document.getElementById('editable').innerHTML;
-          set(dbRef, {
+    // Add event listener to the bold button
+    document.getElementById('boldButton').addEventListener('click', function() {
+        toggleBold();
+    });
+
+    // Enable text editing
+    function enableEdit() {
+        const editableText = document.getElementById('editable');
+        editableText.contentEditable = "true";
+        editableText.focus();
+        isEditing = true;
+
+        // Show toolbar
+        document.getElementById('toolbar').style.display = 'block';
+
+        // Change the icon of the button to indicate "Save" (floppy disk icon or similar)
+        document.getElementById('editButton').classList.remove('fa-edit');
+        document.getElementById('editButton').classList.add('fa-save');
+    }
+
+    // Save edited content
+    function saveEdit() {
+        const editableText = document.getElementById('editable').innerHTML;
+        set(dbRef, {
             content: editableText
-          }).then(() => {
+        }).then(() => {
             alert("Muutokset tallennettu!");
             document.getElementById('editButton').classList.remove('fa-save');
             document.getElementById('editButton').classList.add('fa-edit');
             isEditing = false;
-          }).catch((error) => {
+
+            // Hide toolbar after saving
+            document.getElementById('toolbar').style.display = 'none';
+        }).catch((error) => {
             console.error("Error saving data: ", error);
-          });
-        }
+        });
+    }
 
         // Load content from Firebase
         get(dbRef).then((snapshot) => {
@@ -166,6 +182,9 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     </header>
     <div class="wrapper">
         <main class="mainContainer">
+          <div id="toolbar" style="display: none;">
+            <button id="boldButton" class="fa fa-bold" aria-label="Bold"></button>
+          </div>
             <div class="mainContent" id="mainContent">
                 <p id="editable" contenteditable="false">
                     <b>Automyynti Hakala Ay</b> <br>
